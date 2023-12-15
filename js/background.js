@@ -3,9 +3,44 @@ chrome.runtime.onInstalled.addListener(function() {
     console.log("Ask Your Bookmarks extension installed.");
 });
 
-chrome.browserAction.onClicked.addListener(() => {
-    chrome.bookmarks.getTree(bookmarkItems => {
-      console.log(bookmarkItems); // 这里可以处理书签数据
-      // 您可以在这里编写代码来进一步处理或导出书签
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.bookmarks.getTree(processBookmarks);
+});
+
+function processBookmarks(bookmarkTreeNodes) {
+    let bookmarks = [];
+    bookmarkTreeNodes.forEach(node => {
+        extractBookmarks(node, bookmarks);
     });
-  });
+    // 处理书签数据，例如，向量化
+}
+
+function extractBookmarks(node, bookmarks) {
+    if (node.children) {
+        node.children.forEach(child => extractBookmarks(child, bookmarks));
+    } else {
+        if (node.url) {
+            bookmarks.push({ title: node.title, url: node.url });
+        }
+    }
+}
+
+async function vectorizeBookmarks(bookmarks) {
+    const responses = [];
+
+    for (const bookmark of bookmarks) {
+        const response = await fetch('https://api.openai.com/v1/engines/your-model/embeddings', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer YOUR_OPENAI_API_KEY`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ input: bookmark.title })
+        });
+        const data = await response.json();
+        responses.push(data);
+    }
+
+    // 在这里处理向量化的结果
+}
+
