@@ -3,7 +3,7 @@
     "name": "Ask Your Bookmarks",
     "version": "1.0",
     "description": "Enhance your bookmark search with vectorization technology.",
-    "permissions": ["storage", "activeTab", "https://*/*"],
+    "permissions": ["storage", "activeTab", "bookmarks", "https://*/*"],
     "background": {
         "scripts": ["js/background.js"],
         "persistent": false
