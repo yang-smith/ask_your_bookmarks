@@ -1,0 +1,31 @@
+{
+    "manifest_version": 2,
+    "name": "Ask Your Bookmarks",
+    "version": "1.0",
+    "description": "Enhance your bookmark search with vectorization technology.",
+    "permissions": ["storage", "activeTab", "https://*/*"],
+    "background": {
+        "scripts": ["js/background.js"],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://*/*"],
+            "js": ["js/content.js"]
+        }
+    ],
+    "browser_action": {
+        "default_popup": "html/popup.html",
+        "default_icon": {
+            "16": "assets/icons/icon16.png",
+            "48": "assets/icons/icon48.png",
+            "128": "assets/icons/icon128.png"
+        }
+    },
+    "options_page": "html/options.html",
+    "icons": {
+        "16": "assets/icons/icon16.png",
+        "48": "assets/icons/icon48.png",
+        "128": "assets/icons/icon128.png"
+    }
+}
