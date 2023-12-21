@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "langchain": "^0.0.209"
+  },
+  "devDependencies": {
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

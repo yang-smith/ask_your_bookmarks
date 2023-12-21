@@ -1,8 +1,3 @@
-chrome.runtime.onInstalled.addListener(function() {
-    // 在安装扩展时执行的代码
-    console.log("Ask Your Bookmarks extension installed.");
-});
-
 chrome.runtime.onInstalled.addListener(() => {
     chrome.bookmarks.getTree(processBookmarks);
 });
@@ -13,6 +8,8 @@ function processBookmarks(bookmarkTreeNodes) {
         extractBookmarks(node, bookmarks);
     });
     // 处理书签数据，例如，向量化
+    console.log(bookmarks);
+    // sendBookmarksToAPI(bookmarks);
 }
 
 function extractBookmarks(node, bookmarks) {
@@ -25,22 +22,19 @@ function extractBookmarks(node, bookmarks) {
     }
 }
 
-async function vectorizeBookmarks(bookmarks) {
-    const responses = [];
-
-    for (const bookmark of bookmarks) {
-        const response = await fetch('https://api.openai.com/v1/engines/your-model/embeddings', {
+async function sendBookmarksToAPI(bookmarks) {
+    try {
+        const response = await fetch('http://localhost:3000/api/addBookmarks', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer YOUR_OPENAI_API_KEY`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ input: bookmark.title })
+            body: JSON.stringify({ bookmarks })
         });
         const data = await response.json();
-        responses.push(data);
+        console.log('Bookmarks successfully sent to the API:', data);
+    } catch (error) {
+        console.error('Error sending bookmarks to the API:', error);
     }
-
-    // 在这里处理向量化的结果
 }
 

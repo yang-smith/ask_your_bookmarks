@@ -1,15 +1,37 @@
 console.log("Popup script loaded");
 
 document.getElementById('search-button').addEventListener('click', function() {
-    console.log("search")
     const query = document.getElementById('search-input').value;
     if (query) {
-        // 执行搜索逻辑
         console.log("Searching for:", query);
-        // 调用向量化和搜索函数
+        // 发送搜索请求到你的API
+        fetch('http://localhost:3000/api/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ query, topK: 5 }) // 根据需要调整topK值
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Search results:', data);
+            displayResults(data);
+        })
+        .catch(error => {
+            console.error('Error during search:', error);
+        });
     }
-    chrome.bookmarks.getTree(bookmarkItems => {
-        console.log(bookmarkItems); // 这里可以处理书签数据
-        // 在这里添加代码以在用户点击按钮时处理或导出书签
-      });
 });
+
+function displayResults(data) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = ''; // 清空先前的结果
+    data.forEach(item => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+            <strong>${item.pageContent}</strong>
+            <a href="${item.metadata.url}" target="_blank">${item.metadata.url}</a>
+        `;
+        resultsDiv.appendChild(div);
+    });
+}
