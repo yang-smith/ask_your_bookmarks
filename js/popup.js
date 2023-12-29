@@ -5,7 +5,7 @@ document.getElementById('search-button').addEventListener('click', function() {
     if (query) {
         console.log("Searching for:", query);
         // 发送搜索请求到你的API
-        fetch('http://localhost:3000/api/search', {
+        fetch('https://supabase-server.vercel.app/api/search', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

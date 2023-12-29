@@ -1,0 +1,53 @@
+/* 基本的重置样式，确保在所有浏览器中表现一致 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 400px;
+    height: auto;
+}
+
+body {
+    font-family: 'Arial', sans-serif; /* 现代且易读的字体 */
+    background-color: #f9f9f9; /* 轻柔的背景色 */
+    color: #333; /* 柔和的文字颜色 */
+    line-height: 1.6; /* 文字行间距 */
+    padding: 20px; /* 页面的内边距 */
+}
+
+#search-input {
+    width: 60%; /* 输入框宽度 */
+    padding: 10px; /* 输入框内边距 */
+    margin-bottom: 20px; /* 输入框与按钮的间距 */
+    border: 1px solid #ccc; /* 输入框边框 */
+    border-radius: 5px; /* 边框圆角 */
+    font-size: 16px; /* 文字大小 */
+}
+
+#search-button {
+    width: 30%; /* 按钮宽度 */
+    padding: 10px; /* 按钮内边距 */
+    border: none; /* 去除边框 */
+    background-color: #007bff; /* 按钮背景颜色 */
+    color: white; /* 按钮文字颜色 */
+    border-radius: 5px; /* 边框圆角 */
+    cursor: pointer; /* 鼠标悬停时的指针形状 */
+    font-size: 16px; /* 文字大小 */
+}
+
+#search-button:hover {
+    background-color: #0056b3; /* 鼠标悬停时的按钮背景颜色 */
+}
+
+#results {
+    margin-top: 20px; /* 结果区与按钮的间距 */
+}
+
+/* 单个结果项的样式 */
+.result-item {
+    background-color: white; /* 背景色 */
+    border: 1px solid #ddd; /* 边框 */
+    padding: 10px; /* 内边距 */
+    border-radius: 5px; /* 边框圆角 */
+    margin-bottom: 10px; /* 结果项之间的间距 */
+}
