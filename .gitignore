@@ -2,3 +2,5 @@
 node_modules
 webpack.config.js
 *.py
+dist
+js/supabase_client.js

@@ -3,9 +3,9 @@
     "name": "Ask Your Bookmarks",
     "version": "1.0",
     "description": "Enhance your bookmark search with vectorization technology.",
-    "permissions": ["storage", "activeTab", "bookmarks", "https://*/*", "http://localhost:3000/"],
+    "permissions": ["storage", "activeTab", "bookmarks", "https://*/*", "http://localhost:3000/", "<all_urls>"],
     "background": {
-        "scripts": ["js/background.js"],
+        "page":["html/background.html"],
         "persistent": false
     },
     "content_scripts": [
@@ -27,5 +27,6 @@
         "16": "assets/icons/icon16.png",
         "48": "assets/icons/icon48.png",
         "128": "assets/icons/icon128.png"
-    }
+    },
+    "content_security_policy": "script-src 'self' https://ssvohyeivwdlhzvxewbf.supabase.co; object-src 'self'"
 }

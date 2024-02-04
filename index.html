@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Vite + React + TS + TailwindCSS</title>
+</head>
+<style>
+/* index.css 或者是您的 Tailwind 配置文件 */
+/* 确保 body 和 html 标签填满整个 popup 窗口，并且没有额外的边距或内边距 */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;  /* 可以不设置，因为默认就是100% */
+  height: 100%; /* 可以不设置，因为默认就是100% */
+  overflow: auto; /* 防止内容溢出时出现滚动条 */
+  min-width: 300px;  /* 您的内容需要的最小宽度 */
+  min-height: 200px; /* 您的内容需要的最小高度 */
+  display: flex;     /* 使用 flex 布局，以便内容可以居中或者其他布局需求 */
+  justify-content: center; /* 水平居中内容 */
+  align-items: center;     /* 垂直居中内容 */
+}
+
+</style>
+<body>
+  <!-- <div id="extension-root"></div> -->
+  <script type="module" src="/content-script/index.tsx"></script>
+</body>
+</html>
