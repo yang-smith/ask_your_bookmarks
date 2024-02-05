@@ -1,6 +1,6 @@
 {
-  "name": "Cat Facts",
-  "description": "Learn random facts about cats",
+  "name": "Bookmarkbot",
+  "description": "Enhance your bookmark search with vectorization technology",
   "version": "1.0.0",
   "manifest_version": 3,
   "action": {
@@ -22,7 +22,7 @@
     }
   ],
   "permissions": [
-    "storage"
+    "storage", "activeTab", "bookmarks", "https://*/*", "http://localhost:3000/", "<all_urls>"
   ],
   "background": {
     "service_worker": "./background.global.js"
