@@ -46,7 +46,7 @@ const SignIn = ({onSignIn, title, onScreenChange, helpText, error}: Props) => {
             <span className="text-slate-700 dark:text-slate-400">Email</span>
             <Field
               name="email"
-              placeholder="jane@acme.com"
+              placeholder="someone@gmail.com"
               type="email"
               className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-input'
             />

@@ -1,6 +1,8 @@
 import browser from "webextension-polyfill";
 import {useEffect, useState} from "react";
 import SignIn from "./SignIn";
+import SearchComponent from "./Search";
+import React from "react";
 
 enum SCREEN {
   SIGN_IN, SIGN_UP, FACTS
@@ -59,8 +61,9 @@ const App = () => {
         setScreen(SCREEN.SIGN_UP)
         setError('');
       }} helpText={'Create an account'} error={error}/>
+      
     }
-
+    return <SearchComponent></SearchComponent>
     return (
       <>
         <button
