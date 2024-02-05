@@ -12,9 +12,12 @@
 body, html {
   margin: 0;
   padding: 0;
-  width: 100%;  /* 可以不设置，因为默认就是100% */
-  height: 100%; /* 可以不设置，因为默认就是100% */
+  height: auto; /* 可以不设置，因为默认就是100% */
   overflow: auto; /* 防止内容溢出时出现滚动条 */
+}
+
+/* 为 React 应用的根容器设置最小宽度和最小高度 */
+#extension-root {
   min-width: 300px;  /* 您的内容需要的最小宽度 */
   min-height: 200px; /* 您的内容需要的最小高度 */
   display: flex;     /* 使用 flex 布局，以便内容可以居中或者其他布局需求 */
