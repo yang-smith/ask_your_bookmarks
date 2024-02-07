@@ -68,13 +68,21 @@ const SearchComponent = () => {
         </button>
       </div>
       {/* 搜索结果和分页等其他功能将在这里实现 */}
-      <div className="flex-1 overflow-y-auto space-y-4">
-        {currentResults.map((result, index) => (
-          <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-            <h3 className="font-semibold">{result.pageContent}</h3>
-            <p className="text-sm text-gray-500">{result.metadata.url}</p>
-          </div>
-        ))}
+      <div className="flex-1 overflow-y-auto space-y-1">
+        {currentResults.map((result, index) => {
+          // 分割标题和描述
+          const [title, description] = result.pageContent.split('\n');
+          return (
+            <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+              <h3 className="font-semibold">
+                <a href={result.metadata.url} target="_blank" rel="noopener noreferrer">
+                  {title}
+                </a>
+              </h3>
+              <p className="text-sm text-gray-500">{description}</p>
+            </div>
+          );
+        })}
       </div>
       {/* 分页导航 */}
       <div className="mt-4 flex w-full justify-center">

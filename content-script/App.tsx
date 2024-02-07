@@ -39,7 +39,7 @@ const App = () => {
   async function handleSignIn(email: string, password: string) {
     const {data, error} = await browser.runtime.sendMessage({action: 'signin', value: {email, password}});
     if (error) return setError(error.message)
-
+    console.log(data.session);
     setSession(data.session)
   }
 
