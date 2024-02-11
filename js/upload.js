@@ -58,9 +58,9 @@ export async function fetchDescriptions(user, bookmarks, batchSize = 30) {
     }
 
     console.log(errors); 
-    console.log(bookmarks); 
     bookmarks.user = user;
-    sendBookmarksToAPI(bookmarks);
+    console.log(bookmarks); 
+    // sendBookmarksToAPI(bookmarks);
 }
 
 async function sendBookmarksToAPI(bookmarks) {

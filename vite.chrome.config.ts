@@ -22,7 +22,7 @@ export default defineConfig({
     outDir: resolve(__dirname, 'dist'),
     lib: {
       formats: ['iife'],
-      entry: resolve(__dirname, './background.ts'),
+      entry: resolve(__dirname, './background.js'),
       name: 'Tweton'
     },
     rollupOptions: {
