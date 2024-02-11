@@ -10,6 +10,9 @@
   "optional_permissions": [
     "<all_urls>"
   ],
+  "permissions": [
+    "storage", "activeTab", "bookmarks", "<all_urls>"
+  ],
   "content_scripts": [
     {
       "matches": [
