@@ -3,16 +3,18 @@ import {useEffect, useState} from "react";
 import SignIn from "./SignIn";
 import SearchComponent from "./Search";
 import React from "react";
+import Upload from "./Upload";
 
 enum SCREEN {
-  SIGN_IN, SIGN_UP, FACTS
+  SIGN_IN, SIGN_UP, SEARCH, UPLOAD
 }
 
 const App = () => {
   const [fact, setFact] = useState('Click the button to fetch a fact!');
   const [loading, setLoading] = useState(false);
+  const [uploadcheck, setUploadcheck] = useState(false);
   const [session, setSession] = useState(null);
-  const [screen, setScreen] = useState(SCREEN.FACTS);
+  const [screen, setScreen] = useState(SCREEN.SEARCH);
   const [error, setError] = useState('');
 
   async function getSession() {
@@ -22,6 +24,9 @@ const App = () => {
 
   useEffect(() => {
     getSession();
+    if(!uploadcheck){
+      setScreen(SCREEN.UPLOAD);
+    }
   }, []);
 
   async function handleOnClick() {
@@ -41,6 +46,12 @@ const App = () => {
     if (error) return setError(error.message)
     console.log(data.session);
     setSession(data.session)
+    if(!uploadcheck){
+      setScreen(SCREEN.UPLOAD);
+      // setUploadcheck(true);
+    } else {
+      setScreen(SCREEN.SEARCH);
+    }
   }
 
   async function handleSignOut() {
@@ -56,14 +67,20 @@ const App = () => {
           setScreen(SCREEN.SIGN_IN);
           setError('');
         }} helpText={'Got an account? Sign in'} error={error}/>;
-      }
+      } 
       return <SignIn title='Sign In' onSignIn={handleSignIn} onScreenChange={() => {
         setScreen(SCREEN.SIGN_UP)
         setError('');
       }} helpText={'Create an account'} error={error}/>
       
     }
-    return <SearchComponent></SearchComponent>
+    if(screen == SCREEN.UPLOAD) {
+      return <Upload onScreenChange={()=>{
+        setScreen(SCREEN.SEARCH)
+      }}></Upload>
+    } else if(screen == SCREEN.SEARCH) {
+      return <SearchComponent></SearchComponent>
+    }
     return (
       <>
         <button

@@ -1,50 +1,68 @@
 
-async function fetchDescription(url){
-    // 特殊URL处理
-    if (url.includes('github.com')) {
-        const response = await fetch(url);
-        const html = await response.text();
-        const match = html.match(/<meta name="twitter:description" content="([^"]+)"/i);
-        if(match){
-            if(match[1].includes('Contribute to')){
-                return null;
-            }
-            return match[1];
-        }
-        return null;
-    } else if (url.includes('youtube.com')) {
-        console.log(`YouTube: ${url}`);
-        return null;
-    } else if (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://')) {
-        console.log(`Processing extension URL: ${url}`);
-        return 'extension';
-    }
+let process = 0;
+let count = 0;
+async function fetchDescription(url) {
+    const controller = new AbortController();
+    const signal = controller.signal;
 
-    // 通用网页处理
+    const timeoutPromise = (timeout) => new Promise((_, reject) => {
+        const timeoutId = setTimeout(() => {
+            controller.abort(); 
+            reject(new Error('Request timed out')); 
+        }, timeout);
+    });
+
     try {
-        const response = await fetch(url);
-        const html = await response.text();
-        const metaRegex = /<meta\s+(?:name="description"|\s+property="og:description")\s+content="([^"]*)"/i;
-        const match = html.match(metaRegex);
-        return match ? match[1] : null;
+        const fetchPromise = fetch(url, { signal }).then(response => response.text());
+
+        const html = await Promise.race([fetchPromise, timeoutPromise(10000)]); 
+
+        let description = null;
+        if (url.includes('github.com')) {
+            const match = html.match(/<meta name="twitter:description" content="([^"]+)"/i);
+            if (match && !match[1].includes('Contribute to')) {
+                description = match[1];
+            }
+        } else if (url.includes('youtube.com')) {
+            console.log(`YouTube: ${url}`);
+        } else if (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://')) {
+            console.log(`Processing extension URL: ${url}`);
+            description = 'extension';
+        } else {
+            const metaRegex = /<meta\s+(?:name="description"|\s+property="og:description")\s+content="([^"]*)"/i;
+            const match = html.match(metaRegex);
+            if (match) {
+                description = match[1];
+            }
+        }
+        return description;
     } catch (error) {
         console.error(`Error fetching description for ${url}:`, error);
-        return null; 
+        return null;
     }
 }
 
-export async function fetchDescriptions(user, bookmarks, batchSize = 30) {
+
+
+export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
     let processed = 0;
     const errors = [];
-
+    count = 0;
+    const total = bookmarks.length;
     const processBatch = async (batch) => {
         const fetchPromises = batch.map(bookmark =>
             fetchDescription(bookmark.url)
                 .then(description => {
                     bookmark.description = description;
+                    bookmark.user_id = user_id;
+                    count++;
+                    process = Math.round((count / total) * 100);
                 })
                 .catch(error => {
                     errors.push({ url: bookmark.url, error: error.message });
+                    bookmark.user_id = user_id;
+                    count++;
+                    process = Math.round((count / total) * 100);
                 })
         );
         await Promise.allSettled(fetchPromises);
@@ -58,9 +76,14 @@ export async function fetchDescriptions(user, bookmarks, batchSize = 30) {
     }
 
     console.log(errors); 
-    bookmarks.user = user;
+    
     console.log(bookmarks); 
-    // sendBookmarksToAPI(bookmarks);
+    process = 100;
+    sendBookmarksToAPI(bookmarks);
+}
+
+export function getProcess(){
+    return process;
 }
 
 async function sendBookmarksToAPI(bookmarks) {
@@ -79,3 +102,5 @@ async function sendBookmarksToAPI(bookmarks) {
         console.error('Error sending bookmarks to the API:', error);
     }
 }
+
+

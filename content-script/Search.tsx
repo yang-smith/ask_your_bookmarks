@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import browser from "webextension-polyfill";
 
 type Props = {
   onSearch: (query: string) => void; // 定义 onSearch prop 类型
@@ -15,13 +16,13 @@ const SearchComponent = () => {
     if (query.trim() !== '') {
       console.log("Searching for:", query);
       try {
-        // 发送搜索请求到你的API
+        const response = await browser.runtime.sendMessage({ action: 'getUserid' });
         const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ query, topK: 10 }) // 根据需要调整topK值
+          body: JSON.stringify({ query, topK: 10, userId: response.user_id}) 
         });
 
         if (!searchResponse.ok) {
