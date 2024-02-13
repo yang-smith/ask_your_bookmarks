@@ -12,7 +12,7 @@ enum SCREEN {
 const App = () => {
   const [fact, setFact] = useState('Click the button to fetch a fact!');
   const [loading, setLoading] = useState(false);
-  const [uploadcheck, setUploadcheck] = useState(false);
+  const [uploadcheck, setUploadcheck] = useState(true);
   const [session, setSession] = useState(null);
   const [screen, setScreen] = useState(SCREEN.SEARCH);
   const [error, setError] = useState('');
@@ -21,12 +21,14 @@ const App = () => {
     const {data: {session}} = await browser.runtime.sendMessage({action: 'getSession'});
     setSession(session);
   }
+  async function getUploadcheck() {
+    const response = await browser.runtime.sendMessage({action: 'getUploadcheck'});
+    setUploadcheck(response.Uploadcheck);
+  }
 
   useEffect(() => {
     getSession();
-    if(!uploadcheck){
-      setScreen(SCREEN.UPLOAD);
-    }
+    getUploadcheck();
   }, []);
 
   async function handleOnClick() {
@@ -46,11 +48,11 @@ const App = () => {
     if (error) return setError(error.message)
     console.log(data.session);
     setSession(data.session)
-    if(!uploadcheck){
-      setScreen(SCREEN.UPLOAD);
-      // setUploadcheck(true);
-    } else {
+    getUploadcheck();
+    if(uploadcheck){
       setScreen(SCREEN.SEARCH);
+    } else {
+      setScreen(SCREEN.UPLOAD);
     }
   }
 
