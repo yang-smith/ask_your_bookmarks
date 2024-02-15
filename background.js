@@ -3,7 +3,7 @@ import supabase from './js/supabase_client';
 import { fetchDescriptions, getProcess } from "./js/upload";
 
 let userId = null;
-let Uploadcheck = flase;
+let Uploadcheck = false;
 
 async function handleMessage({ action, value }, response) {
   if (action === 'fetch') {
@@ -111,7 +111,7 @@ async function getUploadcheck() {
     if(searchData.length > 0){
       return true;
     } else {
-      return flase;
+      return false;
     }
   }
   return false;
@@ -119,47 +119,47 @@ async function getUploadcheck() {
 
 
 
-async function checkAndRefreshToken() {
-  const session = supabase.auth.getSession();
-  const currentTime = Date.now() / 1000; // 获取当前时间，转换为秒
+// async function checkAndRefreshToken() {
+//   const session = supabase.auth.getSession();
+//   const currentTime = Date.now() / 1000; // 获取当前时间，转换为秒
 
-  if (session) {
-    const expiresIn = session.expires_at - currentTime;
-    // 如果令牌在1分钟内即将过期，尝试刷新令牌
-    if (expiresIn < 60) {
-      const { data, error } = await supabase.auth.refreshSession(); // 刷新令牌
+//   if (session) {
+//     const expiresIn = session.expires_at - currentTime;
+//     // 如果令牌在1分钟内即将过期，尝试刷新令牌
+//     if (expiresIn < 60) {
+//       const { data, error } = await supabase.auth.refreshSession(); // 刷新令牌
 
-      if (error) {
-        console.error('Error refreshing access token:', error.message);
-      } else {
-        console.log('Access token refreshed successfully.');
-        const refreshToken = data.session.refresh_token;
-        chrome.storage.local.set({ refreshToken: refreshToken }, function () {
-          console.log(refreshToken);
-        });
-      }
-    }
-  } else {
-    // 尝试使用 chrome.storage.local 中的刷新令牌登录
-    chrome.storage.local.get('refreshToken', async function (result) {
-      const refreshToken = result.refreshToken;
-      if (refreshToken) {
-        const { data, error } = await supabase.auth.signInWithRefreshToken(refreshToken);
+//       if (error) {
+//         console.error('Error refreshing access token:', error.message);
+//       } else {
+//         console.log('Access token refreshed successfully.');
+//         const refreshToken = data.session.refresh_token;
+//         chrome.storage.local.set({ refreshToken: refreshToken }, function () {
+//           console.log(refreshToken);
+//         });
+//       }
+//     }
+//   } else {
+//     // 尝试使用 chrome.storage.local 中的刷新令牌登录
+//     chrome.storage.local.get('refreshToken', async function (result) {
+//       const refreshToken = result.refreshToken;
+//       if (refreshToken) {
+//         const { data, error } = await supabase.auth.signInWithRefreshToken(refreshToken);
 
-        if (error) {
-          console.error('Error signing in with refresh token:', error.message);
-          // 处理使用刷新令牌登录失败的情况，可能需要用户重新登录
-        } else {
-          console.log('Signed in with refresh token successfully.');
-          // 更新 chrome.storage.local 中的会话信息
-          chrome.storage.local.set({ session: JSON.stringify(data.session) });
-          // 更新会话信息
-        }
-      } else {
-        console.log('No refresh token found. User might need to log in.');
-        // 处理无刷新令牌的情况，可能需要用户登录
-      }
-    });
+//         if (error) {
+//           console.error('Error signing in with refresh token:', error.message);
+//           // 处理使用刷新令牌登录失败的情况，可能需要用户重新登录
+//         } else {
+//           console.log('Signed in with refresh token successfully.');
+//           // 更新 chrome.storage.local 中的会话信息
+//           chrome.storage.local.set({ session: JSON.stringify(data.session) });
+//           // 更新会话信息
+//         }
+//       } else {
+//         console.log('No refresh token found. User might need to log in.');
+//         // 处理无刷新令牌的情况，可能需要用户登录
+//       }
+//     });
 
-  }
-}
+//   }
+// }
