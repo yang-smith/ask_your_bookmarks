@@ -1,6 +1,8 @@
 
 let process = 0;
 let count = 0;
+let errors = [];
+
 async function fetchDescription(url) {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -38,6 +40,7 @@ async function fetchDescription(url) {
         return description;
     } catch (error) {
         console.error(`Error fetching description for ${url}:`, error);
+        errors.push({ url: bookmark.url, error: error.message });
         return null;
     }
 }
@@ -46,7 +49,6 @@ async function fetchDescription(url) {
 
 export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
     let processed = 0;
-    const errors = [];
     count = 0;
     const total = bookmarks.length;
     const processBatch = async (batch) => {
@@ -59,7 +61,7 @@ export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
                     process = Math.round((count / total) * 100);
                 })
                 .catch(error => {
-                    errors.push({ url: bookmark.url, error: error.message });
+                    console.log("error in");
                     bookmark.user_id = user_id;
                     count++;
                     process = Math.round((count / total) * 100);

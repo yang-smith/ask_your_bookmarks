@@ -104,7 +104,7 @@ async function getUploadcheck() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ query:'anything', topK: 10, userId: response.user_id}) 
+      body: JSON.stringify({ query:'anything', topK: 10, userId: userId}) 
     });
     const searchData = await searchResponse.json();
     console.log(searchData.length);
