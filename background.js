@@ -16,31 +16,43 @@ async function handleMessage({ action, value }, response) {
   } else if (action === 'signin') {
     console.log('requesting auth');
     const { data, error } = await supabase.auth.signInWithPassword(value);
-    if (data) {
-      const refreshToken = data.session.refresh_token;
-      chrome.storage.local.set({ refreshToken: refreshToken }, function () {
-        console.log(refreshToken);
-      });
-    }
+    console.log(value);
     const user = (await supabase.auth.getUser()).data.user;
     if (user) {
       userId = user.id;
+      chrome.storage.local.set({ userId: userId });
+      chrome.storage.local.set({ value: value});
     }
     response({ data, error });
   } else if (action === 'getSession') {
-    supabase.auth.getSession().then(response);
+    let session = supabase.auth.getSession();
+    if(!session){
+      await chrome.storage.local.get(['value'], function(result){
+        if(result.value){
+          supabase.auth.signInWithPassword(result.value);
+          console.log("resign in")
+        }
+      })
+    }
+    response(session);
   } else if (action === 'getUserid') {
+    if(!userId){
+      const user = (await supabase.auth.getUser()).data.user;
+      if(user) {
+        userId = user.id;
+      }
+    }
     response({ user_id: userId });
   } else if (action === 'getUploadcheck') {
-    if(Uploadcheck == true || userId == null){
-      console.log("Uploadcheck == true || userId == null");
+    if(Uploadcheck == true){
       response({ Uploadcheck: Uploadcheck });
     } else {
-      Uploadcheck = await getUploadcheck();
+      await getUploadcheck();
       response({ Uploadcheck: Uploadcheck });
     }
   }else if (action === 'signout') {
     const { error } = await supabase.auth.signOut();
+    chrome.storage.local.set({ value: null});
     response({ data: null, error });
   } else if (action === 'startUpload') {
     browser.bookmarks.getTree().then(processBookmarks).catch(error => console.error(error));
@@ -53,6 +65,45 @@ async function handleMessage({ action, value }, response) {
   }
 }
 
+chrome.storage.local.get(['value'], function(result){
+  if(result.value){
+    supabase.auth.signInWithPassword(result.value);
+    console.log("resign in")
+  } else {
+    console.log("value init", result.value);
+  }
+})
+
+chrome.storage.local.get(['Uploadcheck'], function(result){
+  if(result.Uploadcheck){
+    Uploadcheck = result.Uploadcheck;
+    console.log("reUploadcheck")
+  } else {
+    console.log("Uploadcheck", result.Uploadcheck);
+  }
+})
+
+chrome.bookmarks.onCreated.addListener((id, bookmark) => {
+  console.log(`New bookmark created: ${bookmark.title} - ${bookmark.url}`);
+  
+  if (bookmark.url && bookmark.url.includes("特定字符串")) {
+    fetchSpecialUrl(bookmark.url);
+  }
+});
+
+// supabase.auth.onAuthStateChange((event, session) => {
+//   if (event === 'TOKEN_REFRESHED' && session) {
+//     console.log('TOKEN_REFRESHED', session)
+//     const refreshToken = session.refresh_token;
+//     chrome.storage.local.set({ refreshToken: refreshToken });
+//   }
+// })
+// setInterval(() => {
+//   chrome.storage.local.get(['refreshToken'], function(result) {
+//     console.log('Stored refreshToken:', result.refreshToken);
+//   });
+// }, 1000 * 60 * 1);
+
 export function getCurrentUserId() {
   return userId;
 }
@@ -62,9 +113,6 @@ browser.runtime.onMessage.addListener((msg, sender, response) => {
   return true;
 });
 
-// browser.runtime.onInstalled.addListener(() => {
-//   browser.bookmarks.getTree().then(processBookmarks).catch(error => console.error(error));
-// });
 
 function processBookmarks(bookmarkTreeNodes) {
   let bookmarks = [];
@@ -104,17 +152,17 @@ async function getUploadcheck() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ query:'anything', topK: 10, userId: userId}) 
+      body: JSON.stringify({ query:'anything', topK: 5, userId: userId}) 
     });
     const searchData = await searchResponse.json();
-    console.log(searchData.length);
+    // console.log("fetch upload check", searchData);
     if(searchData.length > 0){
-      return true;
-    } else {
-      return false;
-    }
+      chrome.storage.local.set({ Uploadcheck: true });
+      Uploadcheck = true;
+      return;
+    } 
   }
-  return false;
+  Uploadcheck = false;
 }
 
 
