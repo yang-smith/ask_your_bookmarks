@@ -19,6 +19,7 @@ const App = () => {
 
   async function getSession() {
     const {data: {session}} = await browser.runtime.sendMessage({action: 'getSession'});
+    console.log("getsesion",session);
     setSession(session);
   }
   async function getUploadcheck() {
@@ -46,9 +47,10 @@ const App = () => {
   async function handleSignIn(email: string, password: string) {
     const {data, error} = await browser.runtime.sendMessage({action: 'signin', value: {email, password}});
     if (error) return setError(error.message)
-    console.log(data.session);
+    // console.log(data.session);
     setSession(data.session)
-    getUploadcheck();
+    await getUploadcheck();
+    console.log("if uploadcheck: ", uploadcheck);
     if(uploadcheck){
       setScreen(SCREEN.SEARCH);
     } else {
