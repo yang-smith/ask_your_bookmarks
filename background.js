@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 import supabase from './js/supabase_client';
-import { fetchDescriptions, getProcess } from "./js/upload";
+import { fetchDescriptions, getProcess, addSingleBookmark } from "./js/upload";
 
 let userId = null;
 let Uploadcheck = false;
@@ -83,12 +83,16 @@ chrome.storage.local.get(['Uploadcheck'], function(result){
   }
 })
 
+chrome.storage.local.get(['userId'], function(result){
+  if(result.userId){
+    userId = result.userId;
+    console.log("reset userId")
+  }
+})
+
 chrome.bookmarks.onCreated.addListener((id, bookmark) => {
   console.log(`New bookmark created: ${bookmark.title} - ${bookmark.url}`);
-  
-  if (bookmark.url && bookmark.url.includes("特定字符串")) {
-    fetchSpecialUrl(bookmark.url);
-  }
+  addSingleBookmark(userId, bookmark);
 });
 
 // supabase.auth.onAuthStateChange((event, session) => {

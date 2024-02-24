@@ -84,6 +84,12 @@ export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
     sendBookmarksToAPI(bookmarks);
 }
 
+export async function addSingleBookmark(user_id, bookmark) {
+    bookmark.description = await fetchDescription(bookmark.url);
+    bookmark.user_id = user_id;
+    sendBookmarksToAPI([bookmark]);
+}
+
 export function getProcess(){
     return process;
 }
