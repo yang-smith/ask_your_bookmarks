@@ -4,9 +4,10 @@ import SignIn from "./SignIn";
 import SearchComponent from "./Search";
 import React from "react";
 import Upload from "./Upload";
+import AIComponent from "./Ai";
 
 enum SCREEN {
-  SIGN_IN, SIGN_UP, SEARCH, UPLOAD
+  SIGN_IN, SIGN_UP, SEARCH, UPLOAD, AI
 }
 
 const App = () => {
@@ -14,7 +15,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [uploadcheck, setUploadcheck] = useState(true);
   const [session, setSession] = useState(null);
-  const [screen, setScreen] = useState(SCREEN.SEARCH);
+  const [screen, setScreen] = useState(SCREEN.AI);
   const [error, setError] = useState('');
 
   async function getSession() {
@@ -84,6 +85,8 @@ const App = () => {
       }}></Upload>
     } else if(screen == SCREEN.SEARCH) {
       return <SearchComponent></SearchComponent>
+    } else if(screen == SCREEN.AI) {
+      return <AIComponent></AIComponent>
     }
     return (
       <>
