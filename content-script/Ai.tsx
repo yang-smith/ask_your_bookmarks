@@ -3,7 +3,7 @@ import browser from "webextension-polyfill";
 import { Prompt } from './prompt';
 // import ReactMarkdown from 'react-markdown';
 
-const AIComponent = () => {
+const AIComponent = ({ ChangeToSearch }) => {
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,10 +13,11 @@ const AIComponent = () => {
 
     const handleSearchClick = async () => {
         if (query.trim() !== '') {
-            console.log("Searching for:", query);
+            // console.log("Searching for:", query);
             try {
                 const response = await browser.runtime.sendMessage({ action: 'getUserid' });
-                const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
+                // const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
+                const searchResponse = await fetch('https://api.bookmarkbot.fun/api/search', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -35,7 +36,7 @@ const AIComponent = () => {
                     formattedString += currentItemString + '\n';
                 });
                 const prompt = Prompt(query, formattedString);
-                console.log(prompt);
+                // console.log(prompt);
                 // return;
                 const messages = [
                     { "role": "system", "content": "you are a assitant" },
@@ -43,7 +44,8 @@ const AIComponent = () => {
                 ];
 
                 const controller = new AbortController();
-                const AIResponse = await fetch('https://supabase-server.vercel.app/api/stream', {
+                // const AIResponse = await fetch('https://supabase-server.vercel.app/api/stream', {
+                const AIResponse = await fetch('https://api.bookmarkbot.fun/api/stream', {
                     // const AIResponse = await fetch('http://localhost:3000/api/stream', {
                     method: 'POST',
                     headers: {
@@ -62,7 +64,7 @@ const AIComponent = () => {
                     throw new Error(`AI request failed: ${AIResponse.statusText}`);
                 }
                 const data = AIResponse.body;
-                console.log(data);
+                // console.log(data);
                 if (!data) {
                     console.log(data);
                     return;
@@ -78,7 +80,6 @@ const AIComponent = () => {
                     const chunkValue = decoder.decode(value);
                     text += chunkValue;
                     setContent(text);
-                    console.log(text);
                 }
 
             } catch (error) {
@@ -98,7 +99,7 @@ const AIComponent = () => {
                 const [, title, url, description] = match;
                 return (
                     <div key={index}>
-                        <a href={url} target="_blank" rel="noopener noreferrer">{title}</a> - {description}
+                        <a href={url} target="_blank" rel="noopener noreferrer"><strong>{title}</strong></a> - {description}
                     </div>
                 );
             }
@@ -108,6 +109,11 @@ const AIComponent = () => {
 
     return (
         <div className="flex flex-col h-full p-4">
+            <div>
+            <p className='font-bold text-slate-700 text-slate-800'>
+              <a onClick={ChangeToSearch}>Back</a>
+            </p>
+            </div>
             <div className="flex items-center gap-2 mb-4">
                 <input
                     className="flex-grow h-10 rounded-md border px-3 text-sm"
