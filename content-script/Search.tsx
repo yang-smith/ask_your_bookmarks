@@ -5,7 +5,7 @@ type Props = {
   onSearch: (query: string) => void; // 定义 onSearch prop 类型
 };
 
-const SearchComponent = () => {
+const SearchComponent = ({BackToSign}) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,13 +17,14 @@ const SearchComponent = () => {
       console.log("Searching for:", query);
       try {
         const response = await browser.runtime.sendMessage({ action: 'getUserid' });
-        const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
-        // const searchResponse = await fetch('http://localhost:3000/api/search', {
+        // const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
+        const searchResponse = await fetch('https://api.bookmarkbot.fun/api/search', {
+          // const searchResponse = await fetch('http://localhost:3000/api/search', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ query, topK: 10, userId: response.user_id}) 
+          body: JSON.stringify({ query, topK: 10, userId: response.user_id })
         });
 
         if (!searchResponse.ok) {
@@ -54,6 +55,11 @@ const SearchComponent = () => {
 
   return (
     <div className="flex flex-col h-full p-4">
+      <div>
+        <p className='font-bold text-slate-700 text-slate-800'>
+          <a onClick={BackToSign}>Back</a>
+        </p>
+      </div>
       <div className="flex items-center gap-2 mb-4">
         <input
           className="flex-grow h-10 rounded-md border px-3 text-sm"
@@ -66,7 +72,7 @@ const SearchComponent = () => {
           className="h-10 px-4 py-2 bg-blue-500 text-white rounded-md"
           onClick={handleSearchClick}
         >
-          Ask
+          Search
         </button>
       </div>
       {/* 搜索结果和分页等其他功能将在这里实现 */}
