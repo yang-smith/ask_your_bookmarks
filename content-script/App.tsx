@@ -84,9 +84,14 @@ const App = () => {
         setScreen(SCREEN.SEARCH)
       }}></Upload>
     } else if(screen == SCREEN.SEARCH) {
-      return <SearchComponent></SearchComponent>
+      return <SearchComponent BackToSign={() => {
+        setScreen(SCREEN.SIGN_IN)
+      }}></SearchComponent>
     } else if(screen == SCREEN.AI) {
-      return <AIComponent></AIComponent>
+      return <AIComponent ChangeToSearch={() => {
+        setScreen(SCREEN.SEARCH)
+      }
+      }></AIComponent>
     }
     return (
       <>
