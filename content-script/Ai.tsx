@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import browser from "webextension-polyfill";
 import { Prompt } from './prompt';
+import { displayAllBookmarkClicks, incrementBookmarkClick } from '../js/db';
 // import ReactMarkdown from 'react-markdown';
 
 const AIComponent = ({ ChangeToSearch }) => {
     const [query, setQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [content, setContent] = useState('');
-    const [resultsPerPage, setResultsPerPage] = useState(5);
+    const [frequentlyUsedBookmarks, setFrequentlyUsedBookmarks] = useState([]);
 
+    useEffect(() => {
+        chrome.storage.local.get(null, function (items) {
+            const filteredUrls = Object.keys(items).filter(url => url.startsWith('http'));
+            const sortedUrls = filteredUrls.sort((a, b) => items[b] - items[a]);
+            setFrequentlyUsedBookmarks(sortedUrls);
+        });
+    }, []);
 
     const handleSearchClick = async () => {
         if (query.trim() !== '') {
@@ -107,12 +113,16 @@ const AIComponent = ({ ChangeToSearch }) => {
         });
     };
 
+    const openUrlInNewTab = (url) => {
+        chrome.tabs.create({ url, active: false });
+    };
+
     return (
         <div className="flex flex-col h-full p-4">
             <div>
-            <p className='font-bold text-slate-700 text-slate-800'>
-              <a onClick={ChangeToSearch}>Back</a>
-            </p>
+                <p className='font-bold text-slate-700 text-slate-800'>
+                    <a onClick={ChangeToSearch}>Back</a>
+                </p>
             </div>
             <div className="flex items-center gap-2 mb-4">
                 <input
@@ -132,6 +142,17 @@ const AIComponent = ({ ChangeToSearch }) => {
             {/* 添加内容显示区域 */}
             <div className="content-display" >
                 {parseContent(content)}
+            </div>
+            <div>
+                {frequentlyUsedBookmarks.map((url, index) => (
+                    <div key={index}>
+                        <p>
+                            <a href="#" onClick={() => openUrlInNewTab(url)}>
+                                {url}
+                            </a>
+                        </p>
+                    </div>
+                ))}
             </div>
         </div>
     );

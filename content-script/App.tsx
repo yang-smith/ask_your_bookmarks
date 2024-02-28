@@ -5,9 +5,10 @@ import SearchComponent from "./Search";
 import React from "react";
 import Upload from "./Upload";
 import AIComponent from "./Ai";
+import BookMarks from "./Bookmarks";
 
 enum SCREEN {
-  SIGN_IN, SIGN_UP, SEARCH, UPLOAD, AI
+  SIGN_IN, SIGN_UP, SEARCH, UPLOAD, AI, BOOKMARKS
 }
 
 const App = () => {
@@ -15,7 +16,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [uploadcheck, setUploadcheck] = useState(true);
   const [session, setSession] = useState(null);
-  const [screen, setScreen] = useState(SCREEN.AI);
+  const [screen, setScreen] = useState(SCREEN.BOOKMARKS);
   const [error, setError] = useState('');
 
   async function getSession() {
@@ -92,6 +93,10 @@ const App = () => {
         setScreen(SCREEN.SEARCH)
       }
       }></AIComponent>
+    } else if(screen == SCREEN.BOOKMARKS) {
+      return <BookMarks ChangeToSearch={() => {
+        setScreen(SCREEN.SEARCH)
+      }}></BookMarks>
     }
     return (
       <>
