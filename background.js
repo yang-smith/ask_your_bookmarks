@@ -25,15 +25,25 @@ async function handleMessage({ action, value }, response) {
     }
     response({ data, error });
   } else if (action === 'getSession') {
-    let session = supabase.auth.getSession();
-    if(!session){
-      await chrome.storage.local.get(['value'], function(result){
-        if(result.value){
-          supabase.auth.signInWithPassword(result.value);
-          console.log("resign in")
-        }
-      })
+    let sessionPromise = supabase.auth.getSession();
+    if(!sessionPromise){
+      sessionPromise = await new Promise((resolve, reject) => {
+        chrome.storage.local.get(['value'], function(result) {
+          if (result.value) {
+            supabase.auth.signInWithPassword(result.value)
+              .then(() => {
+                console.log("resign in");
+                resolve(supabase.auth.getSession()); 
+              })
+              .catch(reject); 
+          } else {
+            resolve(null); 
+          }
+        });
+      });
     }
+    const session = await sessionPromise;
+    console.log("response:",session);
     response(session);
   } else if (action === 'getUserid') {
     if(!userId){
