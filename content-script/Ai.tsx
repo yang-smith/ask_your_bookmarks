@@ -115,6 +115,7 @@ const AIComponent = ({ ChangeToSearch }) => {
 
     const openUrlInNewTab = (url) => {
         chrome.tabs.create({ url, active: false });
+        incrementBookmarkClick(url, 1);
     };
 
     return (
