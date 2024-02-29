@@ -120,11 +120,6 @@ const AIComponent = ({ ChangeToSearch }) => {
 
     return (
         <div className="flex flex-col h-full p-4">
-            <div>
-                <p className='font-bold text-slate-700 text-slate-800'>
-                    <a onClick={ChangeToSearch}>Back</a>
-                </p>
-            </div>
             <div className="flex items-center gap-2 mb-4">
                 <input
                     className="flex-grow h-10 rounded-md border px-3 text-sm"
