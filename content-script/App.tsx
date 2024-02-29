@@ -66,6 +66,41 @@ const App = () => {
     setSession(signOutResult.data);
   }
 
+  function AuthenticatedApp() {
+    const screenComponents = {
+      [SCREEN.SIGN_IN]: (
+        <SignIn
+          title="Sign In"
+          onSignIn={handleSignIn}
+          onScreenChange={() => {
+            setScreen(SCREEN.SIGN_UP);
+            setError('');
+          }}
+          helpText={'Create an account'}
+          error={error}
+        />
+      ),
+      [SCREEN.SIGN_UP]: (
+        <SignIn
+          onSignIn={handleSignUp}
+          title="Sign Up"
+          onScreenChange={() => {
+            setScreen(SCREEN.SIGN_IN);
+            setError('');
+          }}
+          helpText={'Got an account? Sign in'}
+          error={error}
+        />
+      ),
+      [SCREEN.UPLOAD]: <Upload onScreenChange={() => setScreen(SCREEN.SEARCH)} />,
+      [SCREEN.SEARCH]: <SearchComponent BackToSign={() => setScreen(SCREEN.SIGN_IN)} />,
+      [SCREEN.AI]: <AIComponent ChangeToSearch={() => setScreen(SCREEN.SEARCH)} />,
+      [SCREEN.BOOKMARKS]: <BookMarks ChangeToSearch={() => setScreen(SCREEN.SEARCH)} />,
+    };
+  
+    return screenComponents[screen] || <div>Screen not found</div>;
+  }
+
   function renderApp() {
     if (!session) {
       if (screen === SCREEN.SIGN_UP) {
@@ -129,7 +164,8 @@ const App = () => {
       </div>
 
 
-      {renderApp()}
+      {/* {renderApp()} */}
+      {AuthenticatedApp()}
     </div>
     // </div>
   )
