@@ -16,7 +16,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [uploadcheck, setUploadcheck] = useState(true);
   const [session, setSession] = useState(null);
-  const [screen, setScreen] = useState(SCREEN.BOOKMARKS);
+  const [screen, setScreen] = useState(SCREEN.SEARCH);
   const [error, setError] = useState('');
 
   async function getSession() {
@@ -159,6 +159,11 @@ const App = () => {
         {session && (
           <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={handleSignOut}>
             登出
+          </button>
+        )}
+        {!session && (
+          <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={() => setScreen(SCREEN.SIGN_IN)}>
+            Sign in
           </button>
         )}
       </div>
