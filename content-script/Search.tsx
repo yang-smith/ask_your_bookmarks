@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import browser from "webextension-polyfill";
+import { incrementBookmarkClick } from '../js/db';
 
 type Props = {
   onSearch: (query: string) => void; // 定义 onSearch prop 类型
@@ -53,6 +54,12 @@ const SearchComponent = ({ BackToSign }) => {
       }
     }
   };
+  
+  const openUrlInNewTab = (url, title) => {
+    chrome.tabs.create({ url, active: false });
+    incrementBookmarkClick(url, title, 1);
+};
+
 
   return (
     <div className="flex flex-col h-full p-4">
