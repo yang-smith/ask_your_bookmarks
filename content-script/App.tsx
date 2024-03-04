@@ -101,52 +101,6 @@ const App = () => {
     return screenComponents[screen] || <div>Screen not found</div>;
   }
 
-  function renderApp() {
-    if (!session) {
-      if (screen === SCREEN.SIGN_UP) {
-        return <SignIn onSignIn={handleSignUp} title={'Sign Up'} onScreenChange={() => {
-          setScreen(SCREEN.SIGN_IN);
-          setError('');
-        }} helpText={'Got an account? Sign in'} error={error} />;
-      }
-      return <SignIn title='Sign In' onSignIn={handleSignIn} onScreenChange={() => {
-        setScreen(SCREEN.SIGN_UP)
-        setError('');
-      }} helpText={'Create an account'} error={error} />
-
-    }
-    if (screen == SCREEN.UPLOAD) {
-      return <Upload onScreenChange={() => {
-        setScreen(SCREEN.SEARCH)
-      }}></Upload>
-    } else if (screen == SCREEN.SEARCH) {
-      return <SearchComponent BackToSign={() => {
-        setScreen(SCREEN.SIGN_IN)
-      }}></SearchComponent>
-    } else if (screen == SCREEN.AI) {
-      return <AIComponent ChangeToSearch={() => {
-        setScreen(SCREEN.SEARCH)
-      }
-      }></AIComponent>
-    } else if (screen == SCREEN.BOOKMARKS) {
-      return <BookMarks ChangeToSearch={() => {
-        setScreen(SCREEN.SEARCH)
-      }}></BookMarks>
-    }
-    return (
-      <>
-        <button
-          className='px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm disabled:opacity-75 w-48'
-          disabled={loading} onClick={handleOnClick}>Get a Cat Fact!
-        </button>
-        <p className='text-slate-800'>{fact}</p>
-        <div>
-          <a className='text-cyan-400' onClick={handleSignOut}>Sign out</a>
-        </div>
-      </>
-    )
-  }
-
   return (
     // <div className='absolute top-0 left-0'>
     <div className='flex flex-col gap-4 p-4 shadow-sm bg-gradient-to-r from-purple-100 to-blue-200 w-96 rounded-md'>
@@ -154,7 +108,7 @@ const App = () => {
         <div className="font-bold">App Logo</div>
           <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.SEARCH)}>搜索</button>
           <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.UPLOAD)}>上传</button>
-          <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.AI)}>AI 功能</button>
+          <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.AI)}>AI</button>
           <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.BOOKMARKS)}>书签</button>
         {session && (
           <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={handleSignOut}>
