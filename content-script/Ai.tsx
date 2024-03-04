@@ -11,10 +11,18 @@ const AIComponent = ({ ChangeToSearch }) => {
 
     useEffect(() => {
         chrome.storage.local.get(null, function (items) {
-            const filteredUrls = Object.keys(items).filter(url => url.startsWith('http'));
-            const sortedUrls = filteredUrls.sort((a, b) => items[b] - items[a]);
-            setFrequentlyUsedBookmarks(sortedUrls);
+            const bookmarks = Object.keys(items)
+                .filter(url => url.startsWith('http'))
+                .map(url => ({
+                    url: url,
+                    title: items[url].title,
+                    count: items[url].count
+                }));
+
+            const sortedBookmarks = bookmarks.sort((a, b) => b.count - a.count);
+            setFrequentlyUsedBookmarks(sortedBookmarks);
         });
+
     }, []);
 
     const handleSearchClick = async () => {
@@ -113,9 +121,9 @@ const AIComponent = ({ ChangeToSearch }) => {
         });
     };
 
-    const openUrlInNewTab = (url) => {
+    const openUrlInNewTab = (url, title) => {
         chrome.tabs.create({ url, active: false });
-        incrementBookmarkClick(url, 1);
+        incrementBookmarkClick(url, title, 1);
     };
 
     return (
@@ -140,16 +148,17 @@ const AIComponent = ({ ChangeToSearch }) => {
                 {parseContent(content)}
             </div>
             <div>
-                {frequentlyUsedBookmarks.map((url, index) => (
+                {frequentlyUsedBookmarks.map((bookmark, index) => (
                     <div key={index}>
                         <p>
-                            <a href="#" onClick={() => openUrlInNewTab(url)}>
-                                {url}
+                            <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)}>
+                                {bookmark.title} (Clicked {bookmark.count} times)
                             </a>
                         </p>
                     </div>
                 ))}
             </div>
+
         </div>
     );
 };

@@ -7,12 +7,12 @@ const BookmarkNode = ({ node }) => {
     const toggleExpand = () => setIsExpanded(!isExpanded);
     const nodeTitle = node.title || "无标题";
     const addToFavorites = (node) => {
-        incrementBookmarkClick(node.url, 100);
+        incrementBookmarkClick(node.url, node.title, 100);
     };
 
-    const openUrlInNewTab = (url) => {
+    const openUrlInNewTab = (url, title) => {
         chrome.tabs.create({ url, active: false });
-        incrementBookmarkClick(url, 1);
+        incrementBookmarkClick(url, title, 1);
     };
 
     return (
@@ -20,7 +20,7 @@ const BookmarkNode = ({ node }) => {
             {node.url ? (
                 // 如果节点是一个书签，渲染一个链接
                 <div className="pl-1 flex justify-between items-center">
-                    <a href="#" onClick={() => openUrlInNewTab(node.url)} className="text-blue-500 hover:text-blue-600">
+                    <a href="#" onClick={() => openUrlInNewTab(node.url, node.title)} className="text-blue-500 hover:text-blue-600">
                         <strong>{node.title}</strong>
                     </a>
                     <button onClick={() => addToFavorites(node)} className="ml-2 text-gray-400 hover:text-gray-600 text-sm">
