@@ -3,7 +3,7 @@ import browser from "webextension-polyfill";
 import { incrementBookmarkClick } from '../js/db';
 
 type Props = {
-  onSearch: (query: string) => void; // 定义 onSearch prop 类型
+  onSearch: (query: string) => void;
 };
 
 const SearchComponent = ({ BackToSign }) => {
@@ -39,7 +39,7 @@ const SearchComponent = ({ BackToSign }) => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ query, topK: 10, userId: response.user_id })
+          body: JSON.stringify({ query, topK: 15, userId: response.user_id })
         });
 
         if (!searchResponse.ok) {
@@ -54,11 +54,11 @@ const SearchComponent = ({ BackToSign }) => {
       }
     }
   };
-  
+
   const openUrlInNewTab = (url, title) => {
     chrome.tabs.create({ url, active: false });
     incrementBookmarkClick(url, title, 1);
-};
+  };
 
 
   return (
@@ -83,10 +83,16 @@ const SearchComponent = ({ BackToSign }) => {
         {searchResults.map((result, index) => {
           // 分割标题和描述
           const [title, description] = result.pageContent.split('\n');
+
+          const openUrlInNewTab = (url, title) => {
+            chrome.tabs.create({ url, active: false });
+            incrementBookmarkClick(url, title, 1);
+          };
+
           return (
             <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
               <h3 className="font-semibold">
-                <a href={result.metadata.url} target="_blank" rel="noopener noreferrer">
+                <a href="#" onClick={() => openUrlInNewTab(result.metadata.url, title)} className="hover:underline">
                   {title}
                 </a>
               </h3>
@@ -95,17 +101,20 @@ const SearchComponent = ({ BackToSign }) => {
           );
         })}
       </div>
-      <div>
-        {frequentlyUsedBookmarks.map((bookmark, index) => (
-          <div key={index} className="mb-3">
-            <p className="text-sm text-gray-600">
-              <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)} className="hover:underline">
-                {bookmark.title} <span className="text-xs text-gray-500">(Clicked {bookmark.count})</span>
-              </a>
-            </p>
-          </div>
-        ))}
-      </div>
+      {searchResults.length === 0 && (
+        <div>
+          {frequentlyUsedBookmarks.map((bookmark, index) => (
+            <div key={index} className="mb-3">
+              <p className="text-sm text-gray-600">
+                <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)} className="hover:underline">
+                  {bookmark.title} <span className="text-xs text-gray-500">(Clicked {bookmark.count})</span>
+                </a>
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 };
