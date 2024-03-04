@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import browser from "webextension-polyfill";
 
 type Props = {
   onSearch: (query: string) => void; // 定义 onSearch prop 类型
 };
 
-const SearchComponent = ({BackToSign}) => {
+const SearchComponent = ({ BackToSign }) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [frequentlyUsedBookmarks, setFrequentlyUsedBookmarks] = useState([]);
+
+  useEffect(() => {
+    chrome.storage.local.get(null, function (items) {
+      const bookmarks = Object.keys(items)
+        .filter(url => url.startsWith('http'))
+        .map(url => ({
+          url: url,
+          title: items[url].title,
+          count: items[url].count
+        }));
+
+      const sortedBookmarks = bookmarks.sort((a, b) => b.count - a.count);
+      setFrequentlyUsedBookmarks(sortedBookmarks);
+    });
+
+  }, []);
 
   const handleSearchClick = async () => {
     if (query.trim() !== '') {
@@ -30,7 +47,7 @@ const SearchComponent = ({BackToSign}) => {
 
         const searchData = await searchResponse.json();
         // console.log('Search results:', searchData);
-        setSearchResults(searchData); 
+        setSearchResults(searchData);
       } catch (error) {
         console.error('Error during search:', error);
       }
@@ -71,7 +88,17 @@ const SearchComponent = ({BackToSign}) => {
           );
         })}
       </div>
-
+      <div>
+        {frequentlyUsedBookmarks.map((bookmark, index) => (
+          <div key={index} className="mb-3">
+            <p className="text-sm text-gray-600">
+              <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)} className="hover:underline">
+                {bookmark.title} <span className="text-xs text-gray-500">(Clicked {bookmark.count})</span>
+              </a>
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

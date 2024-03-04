@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import browser from "webextension-polyfill";
 import { Prompt } from './prompt';
 import { displayAllBookmarkClicks, incrementBookmarkClick } from '../js/db';
@@ -7,23 +7,6 @@ import { displayAllBookmarkClicks, incrementBookmarkClick } from '../js/db';
 const AIComponent = ({ ChangeToSearch }) => {
     const [query, setQuery] = useState('');
     const [content, setContent] = useState('');
-    const [frequentlyUsedBookmarks, setFrequentlyUsedBookmarks] = useState([]);
-
-    useEffect(() => {
-        chrome.storage.local.get(null, function (items) {
-            const bookmarks = Object.keys(items)
-                .filter(url => url.startsWith('http'))
-                .map(url => ({
-                    url: url,
-                    title: items[url].title,
-                    count: items[url].count
-                }));
-
-            const sortedBookmarks = bookmarks.sort((a, b) => b.count - a.count);
-            setFrequentlyUsedBookmarks(sortedBookmarks);
-        });
-
-    }, []);
 
     const handleSearchClick = async () => {
         if (query.trim() !== '') {
@@ -147,17 +130,7 @@ const AIComponent = ({ ChangeToSearch }) => {
             <div className="content-display" >
                 {parseContent(content)}
             </div>
-            <div>
-                {frequentlyUsedBookmarks.map((bookmark, index) => (
-                    <div key={index}>
-                        <p>
-                            <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)}>
-                                {bookmark.title} (Clicked {bookmark.count} times)
-                            </a>
-                        </p>
-                    </div>
-                ))}
-            </div>
+
 
         </div>
     );
