@@ -13,10 +13,6 @@ const BookMarks = ({ ChangeToSearch }) => {
         };
         fetchBookmarks();
     }, []);
-
-    useEffect(() => {
-        console.log("show bookmarktree: ",bookmarkTree);
-    }, [bookmarkTree]); 
     
     return (
         <div className="flex flex-col h-full p-4">
