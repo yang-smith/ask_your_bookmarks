@@ -118,6 +118,11 @@ const AIComponent = ({ ChangeToSearch }) => {
                     type="search"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSearchClick();
+                        }
+                      }}
                 />
                 <button
                     className="h-10 px-4 py-2 bg-blue-500 text-white rounded-md"

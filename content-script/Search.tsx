@@ -70,6 +70,11 @@ const SearchComponent = ({ BackToSign }) => {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearchClick();
+            }
+          }}
         />
         <button
           className="h-10 px-4 py-2 bg-blue-500 text-white rounded-md"
@@ -104,7 +109,7 @@ const SearchComponent = ({ BackToSign }) => {
       {searchResults.length === 0 && (
         <div>
           {frequentlyUsedBookmarks.map((bookmark, index) => (
-            <div key={index} className="mb-3">
+            <div key={index} className="mb-2">
               <p className="text-sm text-gray-600">
                 <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)} className="hover:underline">
                   {bookmark.title} <span className="text-xs text-gray-500">(Clicked {bookmark.count})</span>
