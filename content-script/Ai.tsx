@@ -7,10 +7,12 @@ import { displayAllBookmarkClicks, incrementBookmarkClick } from '../js/db';
 const AIComponent = ({ ChangeToSearch }) => {
     const [query, setQuery] = useState('');
     const [content, setContent] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
 
     const handleSearchClick = async () => {
         if (query.trim() !== '') {
             // console.log("Searching for:", query);
+            setIsSearching(true);
             try {
                 const response = await browser.runtime.sendMessage({ action: 'getUserid' });
                 // const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
@@ -81,6 +83,8 @@ const AIComponent = ({ ChangeToSearch }) => {
 
             } catch (error) {
                 console.error('Error during search:', error);
+            } finally {
+                setIsSearching(false); 
             }
         }
     };
@@ -127,8 +131,9 @@ const AIComponent = ({ ChangeToSearch }) => {
                 <button
                     className="h-10 px-4 py-2 bg-blue-500 text-white rounded-md"
                     onClick={handleSearchClick}
+                    disabled={isSearching}
                 >
-                    Ask
+                    {isSearching ? 'Asking...' : 'Ask'}
                 </button>
             </div>
             {/* 添加内容显示区域 */}
