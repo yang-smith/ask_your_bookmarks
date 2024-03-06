@@ -10,6 +10,8 @@ const SearchComponent = ({ BackToSign }) => {
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [frequentlyUsedBookmarks, setFrequentlyUsedBookmarks] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
 
   useEffect(() => {
     chrome.storage.local.get(null, function (items) {
@@ -30,6 +32,7 @@ const SearchComponent = ({ BackToSign }) => {
   const handleSearchClick = async () => {
     if (query.trim() !== '') {
       console.log("Searching for:", query);
+      setIsSearching(true);
       try {
         const response = await browser.runtime.sendMessage({ action: 'getUserid' });
         // const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
@@ -51,6 +54,8 @@ const SearchComponent = ({ BackToSign }) => {
         setSearchResults(searchData);
       } catch (error) {
         console.error('Error during search:', error);
+      } finally {
+        setIsSearching(false); 
       }
     }
   };
@@ -79,8 +84,9 @@ const SearchComponent = ({ BackToSign }) => {
         <button
           className="h-10 px-4 py-2 bg-blue-500 text-white rounded-md"
           onClick={handleSearchClick}
+          disabled={isSearching}
         >
-          Search
+          {isSearching ? 'Searching...' : 'Search'}
         </button>
       </div>
       {/* 搜索结果*/}
@@ -112,7 +118,7 @@ const SearchComponent = ({ BackToSign }) => {
             <div key={index} className="mb-2">
               <p className="text-sm text-gray-600">
                 <a href="#" onClick={() => openUrlInNewTab(bookmark.url, bookmark.title)} className="hover:underline">
-                  {bookmark.title} <span className="text-xs text-gray-500">(Clicked {bookmark.count})</span>
+                  {bookmark.title} <span className="text-xs text-gray-400">(Clicked {bookmark.count})</span>
                 </a>
               </p>
             </div>
