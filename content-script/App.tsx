@@ -32,6 +32,13 @@ const App = () => {
   useEffect(() => {
     getSession();
     getUploadcheck();
+    const handleMessage = (message, sender, sendResponse) => {
+      if (message.action === "showSignIn") {
+        setScreen(SCREEN.SIGN_IN);
+      }
+    };
+    chrome.runtime.onMessage.addListener(handleMessage);
+    return () => chrome.runtime.onMessage.removeListener(handleMessage);
   }, []);
 
   async function handleOnClick() {
