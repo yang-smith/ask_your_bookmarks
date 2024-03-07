@@ -51,20 +51,30 @@ export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
     let processed = 0;
     count = 0;
     const total = bookmarks.length;
+
+    const sendBatchToAPI = async (batch) => {
+        console.log(`Sending ${batch.length} bookmarks to API`);
+        try {
+            await sendBookmarksToAPI(batch);
+        } catch (error) {
+            console.error("Error sending bookmarks to API:", error);
+        }
+    };
+
     const processBatch = async (batch) => {
         const fetchPromises = batch.map(bookmark =>
             fetchDescription(bookmark.url)
                 .then(description => {
                     bookmark.description = description;
-                    bookmark.user_id = user_id;
-                    count++;
-                    process = Math.round((count / total) * 100);
                 })
                 .catch(error => {
                     console.log("error in");
+                })
+                .finally(()=>{
                     bookmark.user_id = user_id;
                     count++;
                     process = Math.round((count / total) * 100);
+                    chrome.storage.local.set({ process: process });
                 })
         );
         await Promise.allSettled(fetchPromises);
@@ -75,13 +85,12 @@ export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
     while (processed < bookmarks.length) {
         const batch = bookmarks.slice(processed, processed + batchSize);
         await processBatch(batch);
+        await sendBatchToAPI(batch);
     }
 
     console.log(errors); 
-    
     console.log(bookmarks); 
     process = 100;
-    sendBookmarksToAPI(bookmarks);
 }
 
 export async function addSingleBookmark(user_id, bookmark) {
@@ -90,14 +99,12 @@ export async function addSingleBookmark(user_id, bookmark) {
     sendBookmarksToAPI([bookmark]);
 }
 
-export function getProcess(){
-    return process;
-}
 
 async function sendBookmarksToAPI(bookmarks) {
     try {
         // const response = await fetch('http://localhost:3000/api/addBookmarks', {
-        const response = await fetch('https://supabase-server.vercel.app/api/addBookmarks', {
+        // const response = await fetch('https://supabase-server.vercel.app/api/addBookmarks', {
+        const response = await fetch('https://api.bookmarkbot.fun/api/addBookmarks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

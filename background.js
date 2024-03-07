@@ -1,22 +1,18 @@
 import browser from "webextension-polyfill";
 import supabase from './js/supabase_client';
-import { fetchDescriptions, getProcess, addSingleBookmark } from "./js/upload";
+import { fetchDescriptions, addSingleBookmark } from "./js/upload";
 
 let userId = null;
 let Uploadcheck = false;
 
 async function handleMessage({ action, value }, response) {
-  if (action === 'fetch') {
-    const result = await fetch('https://meowfacts.herokuapp.com/');
-    const { data } = await result.json();
-    response({ message: 'Successfully fetched data!', data });
-  } else if (action === 'signup') {
+  if (action === 'signup') {
     const result = await supabase.auth.signUp(value);
     response({ message: 'Successfully signed up!', data: result });
   } else if (action === 'signin') {
     console.log('requesting auth');
     const { data, error } = await supabase.auth.signInWithPassword(value);
-    console.log(value);
+    // console.log(value);
     const user = (await supabase.auth.getUser()).data.user;
     if (user) {
       userId = user.id;
@@ -61,10 +57,6 @@ async function handleMessage({ action, value }, response) {
     response({ data: null, error });
   } else if (action === 'startUpload') {
     browser.bookmarks.getTree().then(processBookmarks).catch(error => console.error(error));
-  } else if (action === 'getProcessed') {
-    console.log(getProcess());
-    const process = getProcess();
-    response({ process: process });
   } else {
     response({ data: null, error: 'Unknown action' });
   }
@@ -124,13 +116,13 @@ browser.runtime.onMessage.addListener((msg, sender, response) => {
 });
 
 
-function processBookmarks(bookmarkTreeNodes) {
+async function processBookmarks(bookmarkTreeNodes) {
   let bookmarks = [];
   bookmarkTreeNodes.forEach(node => {
     extractBookmarks(node, bookmarks);
   });
   console.log(bookmarks);
-  fetchDescriptions(userId, bookmarks);
+  await fetchDescriptions(userId, bookmarks);
 }
 
 function extractBookmarks(node, bookmarks) {
