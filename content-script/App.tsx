@@ -24,9 +24,18 @@ const App = () => {
     console.log("getsesion", session);
     setSession(session);
   }
-  async function getUploadcheck() {
-    const response = await browser.runtime.sendMessage({ action: 'getUploadcheck' });
-    setUploadcheck(response.Uploadcheck);
+  async function getUploadcheck() {    
+    chrome.storage.local.get(['Uploadcheck'], function(result){
+      if(result.Uploadcheck){
+        setUploadcheck(result.Uploadcheck);
+      }
+    })
+
+    chrome.storage.local.get(['userId'], function(result){
+      if(!result.userId){
+        setScreen(SCREEN.SIGN_UP);
+      }
+    })
   }
 
   useEffect(() => {
