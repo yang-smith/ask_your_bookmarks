@@ -45,13 +45,13 @@ const Upload = ({ onScreenChange }) => {
   return (
     <>
       <div className='flex flex-col items-center gap-y-4 py-6'>
-        {progress == 0 && (
+        {/* {progress == 0 && (
           <button
             className="bg-indigo-500 text-white text-lg font-bold py-2 px-4 rounded hover:bg-indigo-700 focus:outline-none focus:shadow-outline"
             onClick={handleStartUpload}>
             Reconstruct Your Old Bookmarks
           </button>
-        )}
+        )} */}
 
         {progress > 1 && (
           <>
