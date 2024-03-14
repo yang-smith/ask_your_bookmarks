@@ -12,8 +12,6 @@ enum SCREEN {
 }
 
 const App = () => {
-  const [fact, setFact] = useState('Click the button to fetch a fact!');
-  const [loading, setLoading] = useState(false);
   const [uploadcheck, setUploadcheck] = useState(true);
   const [session, setSession] = useState(null);
   const [screen, setScreen] = useState(SCREEN.SEARCH);
@@ -24,38 +22,28 @@ const App = () => {
     console.log("getsesion", session);
     setSession(session);
   }
-  async function getUploadcheck() {    
-    chrome.storage.local.get(['Uploadcheck'], function(result){
-      if(result.Uploadcheck){
-        setUploadcheck(result.Uploadcheck);
-      }
-    })
 
+  async function checkScreen() {
     chrome.storage.local.get(['userId'], function(result){
       if(!result.userId){
         setScreen(SCREEN.SIGN_UP);
+      }
+    })
+    chrome.storage.local.get(['process'], function(result){
+      if(result.process){
+        if(result.process>0 && result.process<100) {
+          setUploadcheck(false);
+          setScreen(SCREEN.UPLOAD);
+        }
       }
     })
   }
 
   useEffect(() => {
     getSession();
-    getUploadcheck();
-    const handleMessage = (message, sender, sendResponse) => {
-      if (message.action === "showSignIn") {
-        setScreen(SCREEN.SIGN_IN);
-      }
-    };
-    chrome.runtime.onMessage.addListener(handleMessage);
-    return () => chrome.runtime.onMessage.removeListener(handleMessage);
+    checkScreen();
   }, []);
 
-  async function handleOnClick() {
-    setLoading(true);
-    const { data } = await browser.runtime.sendMessage({ action: 'fetch' });
-    setFact(data);
-    setLoading(false);
-  }
 
   async function handleSignUp(email: string, password: string) {
     await browser.runtime.sendMessage({ action: 'signup', value: { email, password } });
@@ -67,7 +55,6 @@ const App = () => {
     if (error) return setError(error.message)
     // console.log(data.session);
     setSession(data.session)
-    await getUploadcheck();
     console.log("if uploadcheck: ", uploadcheck);
     if (uploadcheck) {
       setScreen(SCREEN.SEARCH);
@@ -123,19 +110,12 @@ const App = () => {
       <div>
         <div className="font-bold">App Logo</div>
           <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.SEARCH)}>搜索</button>
-          <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.UPLOAD)}>上传</button>
+          {!uploadcheck && (
+            <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.UPLOAD)}>上传</button>
+          )} 
           <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.AI)}>AI</button>
           <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.BOOKMARKS)}>书签</button>
-        {session && (
-          <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={handleSignOut}>
-            登出
-          </button>
-        )}
-        {!session && (
-          <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={() => setScreen(SCREEN.SIGN_IN)}>
-            Sign in
-          </button>
-        )}
+          <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={handleSignOut}>登出</button>
       </div>
 
 

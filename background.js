@@ -18,6 +18,16 @@ async function handleMessage({ action, value }, response) {
       userId = user.id;
       chrome.storage.local.set({ userId: userId });
       chrome.storage.local.set({ value: value});
+      //upload bookmarks when first time logging in
+      chrome.storage.local.get(['Uploadcheck'], function(result){
+        if(result.Uploadcheck){
+          Uploadcheck = result.Uploadcheck;
+        } else {
+          Uploadcheck = false;
+          chrome.storage.local.set({ Uploadcheck: false });
+          browser.bookmarks.getTree().then(processBookmarks).catch(error => console.error(error));  
+        }
+      })
     }
     response({ data, error });
   } else if (action === 'getSession') {
@@ -44,14 +54,7 @@ async function handleMessage({ action, value }, response) {
       }
     }
     response({ user_id: userId });
-  } else if (action === 'getUploadcheck') {
-    if(Uploadcheck == true){
-      response({ Uploadcheck: Uploadcheck });
-    } else {
-      await getUploadcheck();
-      response({ Uploadcheck: Uploadcheck });
-    }
-  }else if (action === 'signout') {
+  } else if (action === 'signout') {
     const { error } = await supabase.auth.signOut();
     chrome.storage.local.set({ value: null});
     response({ data: null, error });
@@ -68,7 +71,6 @@ chrome.storage.local.get(['value'], function(result){
     console.log("resign in")
   } else {
     console.log("value init", result.value);
-    chrome.runtime.sendMessage({action: "showSignIn"});
   }
 })
 
@@ -77,7 +79,7 @@ chrome.storage.local.get(['Uploadcheck'], function(result){
     Uploadcheck = result.Uploadcheck;
     console.log("reUploadcheck",Uploadcheck)
   } else {
-    console.log("Uploadcheck", result.Uploadcheck);
+    console.log("none Uploadcheck", result.Uploadcheck);
   }
 })
 
@@ -146,24 +148,3 @@ function deleteBookmark(url) {
 function getErrors() {
   return errors;
 }
-
-async function getUploadcheck() {
-  if(userId){
-    const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query:'anything', topK: 5, userId: userId}) 
-    });
-    const searchData = await searchResponse.json();
-    // console.log("fetch upload check", searchData);
-    if(searchData.length > 0){
-      chrome.storage.local.set({ Uploadcheck: true });
-      Uploadcheck = true;
-      return;
-    } 
-  }
-  Uploadcheck = false;
-}
-
