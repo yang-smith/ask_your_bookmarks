@@ -55,12 +55,21 @@ const App = () => {
     if (error) return setError(error.message)
     // console.log(data.session);
     setSession(data.session)
-    console.log("if uploadcheck: ", uploadcheck);
-    if (uploadcheck) {
-      setScreen(SCREEN.SEARCH);
-    } else {
-      setScreen(SCREEN.UPLOAD);
-    }
+    checkUpload();
+  }
+
+  async function checkUpload() {
+    chrome.storage.local.get(['Uploadcheck'], function(result){
+      if(result.Uploadcheck){
+        if(result.Uploadcheck == false){
+          setScreen(SCREEN.UPLOAD);
+        } else {
+          setScreen(SCREEN.SEARCH);
+        }
+      } else {
+        setScreen(SCREEN.UPLOAD);
+      }
+    })
   }
 
   async function handleSignOut() {

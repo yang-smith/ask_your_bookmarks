@@ -24,8 +24,8 @@ const Upload = ({ onScreenChange }) => {
           setProgress(progress); // 更新进度
           setLoading(progress < 100); // 根据进度决定是否继续显示加载状态
           if (progress >= 100) {
-            clearInterval(intervalId);
             onScreenChange();
+            clearInterval(intervalId);
           }
         }
       } catch (error) {
@@ -33,10 +33,8 @@ const Upload = ({ onScreenChange }) => {
       }
     };
 
-    // 定时请求进度信息
     const intervalId = setInterval(requestProgress, 1000);
 
-    // 清理函数，组件卸载时清除定时器
     return () => {
       clearInterval(intervalId);
     };
@@ -53,7 +51,7 @@ const Upload = ({ onScreenChange }) => {
           </button>
         )} */}
 
-        {progress > 1 && (
+        {(progress > 1 && progress < 100) && (
           <>
             <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
               <div className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{ width: `${progress}%` }}> Doing... {progress}% </div>

@@ -20,9 +20,8 @@ async function handleMessage({ action, value }, response) {
       chrome.storage.local.set({ value: value});
       //upload bookmarks when first time logging in
       chrome.storage.local.get(['Uploadcheck'], function(result){
-        if(result.Uploadcheck){
-          Uploadcheck = result.Uploadcheck;
-        } else {
+        Uploadcheck = result.Uploadcheck;
+        if(result.Uploadcheck == null){
           Uploadcheck = false;
           chrome.storage.local.set({ Uploadcheck: false });
           browser.bookmarks.getTree().then(processBookmarks).catch(error => console.error(error));  

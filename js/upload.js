@@ -91,6 +91,7 @@ export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
     console.log(errors); 
     console.log(bookmarks); 
     process = 100;
+    chrome.storage.local.set({ Uploadcheck: true });
 }
 
 export async function addSingleBookmark(user_id, bookmark) {
