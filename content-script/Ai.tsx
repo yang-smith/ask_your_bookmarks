@@ -1,6 +1,6 @@
 import React, {useState } from 'react';
 import browser from "webextension-polyfill";
-import { Prompt } from './prompt';
+import { Prompt, Prompt_zn } from './prompt';
 import { displayAllBookmarkClicks, incrementBookmarkClick } from '../js/db';
 // import ReactMarkdown from 'react-markdown';
 
@@ -34,7 +34,12 @@ const AIComponent = ({ ChangeToSearch }) => {
                     const currentItemString = `(${websiteName})[${item.metadata.url}] ${formattedDescription}`;
                     formattedString += currentItemString + '\n';
                 });
-                const prompt = Prompt(query, formattedString);
+
+                const isChineseLanguage = navigator.language.startsWith('zh');
+
+                const prompt = !isChineseLanguage 
+                    ? Prompt(query, formattedString)
+                    : Prompt_zn(query, formattedString);
                 // console.log(prompt);
                 // return;
                 const messages = [

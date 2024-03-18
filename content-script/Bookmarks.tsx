@@ -17,7 +17,7 @@ const BookMarks = ({ ChangeToSearch }) => {
     return (
         <div className="flex flex-col h-full p-4">
             <div>
-                {bookmarkTree.length > 0 && bookmarkTree.map(node => <BookmarkNode key={node.id} node={node} />)}
+                {bookmarkTree.length > 0 && bookmarkTree.map(node => <BookmarkNode key={node.id} node={node} expanded={node.index === 0} />)}
             </div>
         </div>
     );

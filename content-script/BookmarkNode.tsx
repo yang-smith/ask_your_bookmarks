@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { incrementBookmarkClick } from '../js/db';
 
-const BookmarkNode = ({ node }) => {
+const BookmarkNode = ({ node, expanded = false  }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+
+    useEffect(() => {
+        setIsExpanded(expanded);
+    }, [expanded]);
 
     const toggleExpand = () => setIsExpanded(!isExpanded);
     const nodeTitle = node.title || "无标题";
@@ -24,7 +28,7 @@ const BookmarkNode = ({ node }) => {
                         <strong>{node.title}</strong>
                     </a>
                     <button onClick={() => addToFavorites(node)} className="ml-2 text-gray-400 hover:text-gray-600 text-sm">
-                        设为常用
+                        Add to Favorites
                     </button>
                 </div>
 
