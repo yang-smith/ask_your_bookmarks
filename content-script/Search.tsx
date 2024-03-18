@@ -35,8 +35,12 @@ const SearchComponent = ({ BackToSign }) => {
       setIsSearching(true);
       try {
         const response = await browser.runtime.sendMessage({ action: 'getUserid' });
-        // const searchResponse = await fetch('https://supabase-server.vercel.app/api/search', {
-        const searchResponse = await fetch('https://api.bookmarkbot.fun/api/search', {
+        const isChineseLanguage = navigator.language.startsWith('zh');
+        const apiUrl = !isChineseLanguage
+          ? 'https://supabase-server.vercel.app/api/search'
+          : 'https://api.bookmarkbot.fun/api/search';
+
+        const searchResponse = await fetch(apiUrl, {
           // const searchResponse = await fetch('http://localhost:3000/api/search', {
           method: 'POST',
           headers: {
