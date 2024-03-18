@@ -4,7 +4,7 @@ webpack.config.js
 *.py
 dist
 js/supabase_client.js
-bookmarks.zip
+# bookmarks.zip
 dist.crx
 dist.pem
 _locales
