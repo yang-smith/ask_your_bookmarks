@@ -42,7 +42,7 @@ const SearchComponent = ({ BackToSign }) => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ query, topK: 15, userId: response.user_id })
+          body: JSON.stringify({ query, topK: 20, userId: response.user_id })
         });
 
         if (!searchResponse.ok) {
@@ -107,7 +107,7 @@ const SearchComponent = ({ BackToSign }) => {
                   {title}
                 </a>
               </h3>
-              <p className="text-sm text-gray-500">{description}</p>
+              {(description !='null') && <p className="text-sm text-gray-500">{description}</p>}
             </div>
           );
         })}
