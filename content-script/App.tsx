@@ -24,14 +24,14 @@ const App = () => {
   }
 
   async function checkScreen() {
-    chrome.storage.local.get(['userId'], function(result){
-      if(!result.userId){
+    chrome.storage.local.get(['userId'], function (result) {
+      if (!result.userId) {
         setScreen(SCREEN.SIGN_UP);
       }
     })
-    chrome.storage.local.get(['process'], function(result){
-      if(result.process){
-        if(result.process>0 && result.process<100) {
+    chrome.storage.local.get(['process'], function (result) {
+      if (result.process) {
+        if (result.process > 0 && result.process < 100) {
           setUploadcheck(false);
           setScreen(SCREEN.UPLOAD);
         }
@@ -59,9 +59,9 @@ const App = () => {
   }
 
   async function checkUpload() {
-    chrome.storage.local.get(['Uploadcheck'], function(result){
-      if(result.Uploadcheck){
-        if(result.Uploadcheck == false){
+    chrome.storage.local.get(['Uploadcheck'], function (result) {
+      if (result.Uploadcheck) {
+        if (result.Uploadcheck == false) {
           setScreen(SCREEN.UPLOAD);
         } else {
           setScreen(SCREEN.SEARCH);
@@ -109,28 +109,29 @@ const App = () => {
       [SCREEN.AI]: <AIComponent ChangeToSearch={() => setScreen(SCREEN.SEARCH)} />,
       [SCREEN.BOOKMARKS]: <BookMarks ChangeToSearch={() => setScreen(SCREEN.SEARCH)} />,
     };
-  
+
     return screenComponents[screen] || <div>Screen not found</div>;
   }
 
   return (
     // <div className='absolute top-0 left-0'>
-    <div className='flex flex-col gap-4 p-4 shadow-sm bg-gradient-to-r from-purple-100 to-blue-200 w-96 rounded-md'>
+    <div className='flex flex-col gap-4 p-4 shadow-sm bg-gradient-to-r from-gray-50 to-gray-100 w-96 rounded-md'>
       <div>
-        <div className="font-bold">App Logo</div>
-          <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.SEARCH)}>Home</button>
-          {!uploadcheck && (
-            <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.UPLOAD)}>Upload</button>
-          )} 
-          <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.AI)}>AI</button>
-          <button className="py-2 px-4 bg-blue-400 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.BOOKMARKS)}>ALL</button>
-          <button className="ml-auto py-2 px-4 border border-white rounded-md hover:bg-white hover:text-blue-700 transition duration-300" onClick={handleSignOut}>Sign out</button>
+        <div className="font-bold text-gray-800">App Logo</div>
+        <button className="py-2 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.SEARCH)}>Home</button>
+        {!uploadcheck && (
+          <button className="py-2 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.UPLOAD)}>Upload</button>
+        )}
+        {/* <button className="py-2 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.AI)}>AI</button> */}
+        <button className="py-2 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.BOOKMARKS)}>ALL</button>
+        <button className="ml-auto py-2 px-4 border border-gray-200 hover:bg-gray-100 hover:text-gray-800 transition duration-300" onClick={handleSignOut}>Sign out</button>
       </div>
 
 
-      {/* {renderApp()} */}
-      {AuthenticatedApp()}
-    </div>
+
+      {/* {renderApp()} */ }
+  { AuthenticatedApp() }
+    </div >
     // </div>
   )
 }

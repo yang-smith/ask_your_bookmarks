@@ -40,7 +40,7 @@ const SearchComponent = ({ BackToSign }) => {
           ? 'https://supabase-server.vercel.app/api/search'
           : 'https://api.bookmarkbot.fun/api/search';
 
-        const searchResponse = await fetch(apiUrl, {
+        const searchResponse = await fetch('https://api.bookmarkbot.fun/api/hybrid', {
           // const searchResponse = await fetch('http://localhost:3000/api/search', {
           method: 'POST',
           headers: {
@@ -71,10 +71,10 @@ const SearchComponent = ({ BackToSign }) => {
 
 
   return (
-    <div className="flex flex-col h-full p-4">
+    <div className="flex flex-col h-full p-4 bg-gray-50">
       <div className="flex items-center gap-2 mb-4">
         <input
-          className="flex-grow h-10 rounded-md border px-3 text-sm"
+          className="flex-grow h-10 rounded-md border border-gray-200 px-3 text-sm text-gray-800 bg-white"
           placeholder="What do you want?"
           type="search"
           value={query}
@@ -86,7 +86,7 @@ const SearchComponent = ({ BackToSign }) => {
           }}
         />
         <button
-          className="h-10 px-4 py-2 bg-blue-500 text-white rounded-md"
+          className="h-10 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
           onClick={handleSearchClick}
           disabled={isSearching}
         >
@@ -105,7 +105,7 @@ const SearchComponent = ({ BackToSign }) => {
           };
 
           return (
-            <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
+            <div key={index} className="rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm p-4">
               <h3 className="font-semibold">
                 <a href="#" onClick={() => openUrlInNewTab(result.metadata.url, title)} className="hover:underline">
                   {title}

@@ -41,12 +41,12 @@ async function fetchYouTubeVideoDescription(videourl) {
     let videoId = '';
 
     if (urlObj.hostname === 'youtu.be') {
-        id = urlObj.pathname.split('/')[1];
+        videoId = urlObj.pathname.split('/')[1];
     } else if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
         if (urlObj.pathname === '/watch') {
-            id = urlObj.searchParams.get('v');
+            videoId = urlObj.searchParams.get('v');
         } else if (urlObj.pathname.startsWith('/embed/')) {
-            id = urlObj.pathname.split('/')[2];
+            videoId = urlObj.pathname.split('/')[2];
         }
     }
 
@@ -169,6 +169,7 @@ export async function fetchDescriptions(user_id, bookmarks, batchSize = 30) {
 export async function addSingleBookmark(user_id, bookmark) {
     bookmark.description = await fetchDescription(bookmark.url);
     bookmark.user_id = user_id;
+    console.log(bookmark);
     sendBookmarksToAPI([bookmark]);
 }
 
