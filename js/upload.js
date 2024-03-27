@@ -1,4 +1,5 @@
 
+import apiKey from './key'
 let process = 0;
 let count = 0;
 let errors = [];
@@ -50,7 +51,6 @@ async function fetchYouTubeVideoDescription(videourl) {
         }
     }
 
-    const apiKey = 'AIzaSyCU_zRSQ4LvnQ49wTcEHDcyfWhMCSCYEk0'; 
     const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet`;
 
     try {
