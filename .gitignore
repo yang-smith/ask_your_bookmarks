@@ -8,3 +8,4 @@ js/supabase_client.js
 dist.crx
 dist.pem
 _locales
+js/key.js
