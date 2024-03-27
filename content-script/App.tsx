@@ -117,7 +117,7 @@ const App = () => {
     // <div className='absolute top-0 left-0'>
     <div className='flex flex-col gap-4 p-4 shadow-sm bg-gradient-to-r from-gray-50 to-gray-100 w-96 rounded-md'>
       <div>
-        <div className="font-bold text-gray-800">App Logo</div>
+        {/* <div className="font-bold text-gray-800">App Logo</div> */}
         <button className="py-2 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.SEARCH)}>Home</button>
         {!uploadcheck && (
           <button className="py-2 px-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold rounded-lg shadow transition duration-300" onClick={() => setScreen(SCREEN.UPLOAD)}>Upload</button>
