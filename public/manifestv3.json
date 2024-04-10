@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Ask Your Bookmarks",
   "version": "0.9.3",
-  "description": "Enhance your bookmark search with vectorization technology.",
+  "description": "Simple and Smart Bookmark Manager. Great AI-powered search capability, find the bookmark you want through fuzzy descriptions. Designed for those with many bookmarks.",
   "permissions": ["storage", "bookmarks", "tabs"],
   "host_permissions": ["<all_urls>"],
   "action": {
