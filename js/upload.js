@@ -1,5 +1,5 @@
 
-import apiKey from './key'
+import { apiKey } from './key.js';
 let process = 0;
 let count = 0;
 let errors = [];

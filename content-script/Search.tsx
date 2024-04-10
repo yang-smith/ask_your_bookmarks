@@ -24,7 +24,8 @@ const SearchComponent = ({ BackToSign }) => {
         }));
 
       const sortedBookmarks = bookmarks.sort((a, b) => b.count - a.count);
-      setFrequentlyUsedBookmarks(sortedBookmarks);
+      const limitedBookmarks = sortedBookmarks.slice(0, 9);
+      setFrequentlyUsedBookmarks(limitedBookmarks);
     });
 
   }, []);
