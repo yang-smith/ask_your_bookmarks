@@ -1,10 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Ask Your Bookmarks",
-  "version": "0.9.3",
-  "description": "Simple and Smart Bookmark Manager. Great AI-powered search capability, find the bookmark you want through fuzzy descriptions. Designed for those with many bookmarks.",
+  "version": "0.9.4",
+  "description": "Simple and Smart Bookmark Manager. Great AI-powered search capability, find the bookmark you want through fuzzy descriptions.",
   "permissions": ["storage", "bookmarks", "tabs"],
-  "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "index.html"
   },
